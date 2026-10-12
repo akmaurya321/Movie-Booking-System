@@ -42,7 +42,7 @@ public class MovieController {
         return ResponseEntity.ok(movieService.getByGenre(genre));
     }
 
-    @GetMapping("/genre/{language}")
+    @GetMapping("/language/{language}")
     public ResponseEntity<List<Movie>> getByLanguage(@PathVariable String language)
     {
         return ResponseEntity.ok(movieService.getByLanguage(language));

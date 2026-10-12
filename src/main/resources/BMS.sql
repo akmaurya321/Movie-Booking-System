@@ -2,8 +2,7 @@
 -- FRESH RENDER SEED DATA
 -- Static catalog data only.
 -- users, bookings and booking_seats are intentionally NOT seeded.
--- Run this on a fresh MOVIE_BOOKING database after the tables exist.
-USE defaultdb;
+-- Run this against the database configured by DB_NAME after the tables exist.
 
 SET FOREIGN_KEY_CHECKS = 0;
 

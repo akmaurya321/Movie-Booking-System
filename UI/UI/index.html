@@ -84,7 +84,7 @@
         } catch (e) {
           showEmpty(
             "movies-grid",
-            "Could not load movies. Is the backend running?",
+            `Could not load movies: ${e.message}`,
           );
         }
       }

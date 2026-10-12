@@ -139,11 +139,10 @@ Movie-Booking-System
 ### User APIs
 
 ```http
-POST /users
+POST /users/register
+POST /users/login
 GET /users
 GET /users/{id}
-PUT /users/{id}
-DELETE /users/{id}
 ```
 
 ### Movie APIs
@@ -152,6 +151,9 @@ DELETE /users/{id}
 POST /movies
 GET /movies
 GET /movies/{id}
+GET /movies/search?title={title}
+GET /movies/genre/{genre}
+GET /movies/language/{language}
 PUT /movies/{id}
 DELETE /movies/{id}
 ```
@@ -196,15 +198,8 @@ Database script included:
 src/main/resources/BMS.sql
 ```
 
-Contains:
-
-* Cities Data
-* Users Data
-* Movies Data
-* Theater Data
-* Shows Data
-* Seats Data
-* Booking Sample Data
+The seed script contains city, movie, theater, screen, seat, and show records.
+Users, bookings, and booking-seat records are created at runtime.
 
 ---
 
@@ -224,23 +219,42 @@ cd Movie-Booking-System
 
 ### Configure Database
 
-Create MySQL database and import:
+Create the MySQL database used by the application. The defaults use port `3307`
+and database `movie_booking`:
 
-```text
-BMS.sql
+```sql
+CREATE DATABASE movie_booking;
 ```
+
+Configure `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD` to match
+your MySQL server. `DB_SSL_MODE` defaults to `PREFERRED` for local development;
+set it to `REQUIRED` if your database requires TLS.
+
+Start the backend once to let Hibernate create the tables, then import the
+catalog seed data into the same database:
+
+```bash
+mysql -h localhost -P 3307 -u root -p movie_booking < src/main/resources/BMS.sql
+```
+
+The seed script uses the currently selected database and does not switch to a
+hard-coded schema name.
 
 ### Run Spring Boot Application
 
 ```bash
-mvn spring-boot:run
+mvnw.cmd spring-boot:run
 ```
 
 Backend runs on:
 
 ```text
-http://localhost:8080
+http://localhost:10000
 ```
+
+When opened locally, the frontend connects to `http://localhost:10000/api`.
+The deployed frontend uses the hosted API; set `window.BMS_API_URL` before
+loading `js/api.js` to override the API base URL.
 
 ---
 

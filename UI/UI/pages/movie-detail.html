@@ -84,7 +84,7 @@
                 `;
                 loadShows();
             } catch (e) {
-                document.getElementById('movie-detail').innerHTML = '<div class="empty-state"><p>Movie not found</p></div>';
+                showEmpty('movie-detail', `Could not load movie: ${e.message}`);
             }
         }
 
@@ -110,7 +110,7 @@
                     </div>
                 `).join('');
             } catch (e) {
-                showEmpty('shows-list', 'Could not load shows');
+                showEmpty('shows-list', `Could not load shows: ${e.message}`);
             }
         }
 

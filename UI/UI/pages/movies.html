@@ -96,7 +96,7 @@
           renderMovies(allMovies);
           populateFilters();
         } catch (e) {
-          showEmpty("movies-grid", "Could not load movies");
+          showEmpty("movies-grid", `Could not load movies: ${e.message}`);
         }
       }
 

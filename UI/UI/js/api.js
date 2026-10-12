@@ -1,51 +1,58 @@
-// ===== API BASE URL =====
-const API = 'https://movie-booking-system-o1pl.onrender.com/api';
+// Override with window.BMS_API_URL when the frontend and API use custom hosts.
+const isLocalFrontend = window.location.protocol === 'file:' ||
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1';
+const API = window.BMS_API_URL || (isLocalFrontend
+    ? 'http://localhost:10000/api'
+    : 'https://movie-booking-system-o1pl.onrender.com/api');
 
 // ===== GENERIC FETCH HELPERS =====
-async function apiGet(endpoint) {
-    const res = await fetch(`${API}${endpoint}`);
-    if (!res.ok) {
-        const err = await res.json().catch(() => ({ message: res.statusText }));
-        throw new Error(err.message || 'Request failed');
+async function apiRequest(endpoint, options) {
+    let res;
+    try {
+        res = await fetch(`${API}${endpoint}`, options);
+    } catch {
+        throw new Error(`Could not connect to the API at ${API}. Check that the backend is running and reachable.`);
     }
-    return res.json();
+
+    const text = await res.text();
+    let body = text;
+    if (text) {
+        try {
+            body = JSON.parse(text);
+        } catch {
+            body = { message: text };
+        }
+    }
+    if (!res.ok) {
+        const message = body && typeof body === 'object' ? body.message || body.error : body;
+        throw new Error(message || res.statusText || 'Request failed');
+    }
+    return body;
+}
+
+async function apiGet(endpoint) {
+    return apiRequest(endpoint);
 }
 
 async function apiPost(endpoint, data) {
-    const res = await fetch(`${API}${endpoint}`, {
+    return apiRequest(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     });
-    if (!res.ok) {
-        const err = await res.json().catch(() => ({ message: res.statusText }));
-        throw new Error(err.message || 'Request failed');
-    }
-    return res.json();
 }
 
 async function apiPut(endpoint, data) {
-    const res = await fetch(`${API}${endpoint}`, {
+    return apiRequest(endpoint, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: data ? JSON.stringify(data) : undefined
     });
-    if (!res.ok) {
-        const err = await res.json().catch(() => ({ message: res.statusText }));
-        throw new Error(err.message || 'Request failed');
-    }
-    return res.json();
 }
 
 async function apiDelete(endpoint) {
-    const res = await fetch(`${API}${endpoint}`, { method: 'DELETE' });
-    if (!res.ok) {
-        const err = await res.json().catch(() => ({ message: res.statusText }));
-        throw new Error(err.message || 'Request failed');
-    }
-    // might return text
-    const text = await res.text();
-    try { return JSON.parse(text); } catch { return text; }
+    return apiRequest(endpoint, { method: 'DELETE' });
 }
 
 // ===== USER APIs =====
@@ -115,4 +122,3 @@ const BookingAPI = {
     cancel: (id) => apiPut(`/bookings/${id}/cancel`),
     getAvailableSeats: (showId) => apiGet(`/bookings/show/${showId}/available-seats`)
 };
-

@@ -62,7 +62,7 @@
                 const theaters = await TheaterAPI.getAll();
                 renderTheaters(theaters);
             } catch (e) {
-                showEmpty('theaters-grid', 'Could not load theaters');
+                showEmpty('theaters-grid', `Could not load theaters: ${e.message}`);
             }
         }
 
@@ -72,7 +72,7 @@
                 const theaters = await TheaterAPI.getByCity(cityId);
                 renderTheaters(theaters);
             } catch (e) {
-                showEmpty('theaters-grid', 'No theaters in this city');
+                showEmpty('theaters-grid', `Could not load theaters: ${e.message}`);
             }
         }
 

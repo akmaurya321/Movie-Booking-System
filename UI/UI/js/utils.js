@@ -72,7 +72,9 @@ function showLoading(containerId) {
 
 function showEmpty(containerId, message = 'No data found') {
     const el = document.getElementById(containerId);
-    if (el) el.innerHTML = `<div class="empty-state"><div class="icon">🎬</div><p>${message}</p></div>`;
+    if (!el) return;
+    el.innerHTML = '<div class="empty-state"><div class="icon">🎬</div><p></p></div>';
+    el.querySelector('.empty-state p').textContent = message;
 }
 
 // ===== MODAL HELPERS =====

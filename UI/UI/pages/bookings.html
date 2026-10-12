@@ -73,7 +73,7 @@
                     </div>
                 `).join('');
             } catch (e) {
-                showEmpty('bookings-list', 'Could not load bookings');
+                showEmpty('bookings-list', `Could not load bookings: ${e.message}`);
             }
         }
 
